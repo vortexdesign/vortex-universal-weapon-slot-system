@@ -1,0 +1,17 @@
+Vortex's Universal Weapon Slot System (VUWS)
+Copyright (c) 2026 Vortex
+
+Requested by community member Melchior
+
+PDA Starter Kit by Nash
+https://github.com/nashmuhandes/PDA_Starter_Kit
+
+Gearbox-v0.8.0 by mmaulwurff
+https://github.com/mmaulwurff/doom-toolbox/releases?q=gearbox&expanded=true
+
+License:
+- Code is licensed under the MIT License (see LICENSE file).
+
+Credit (appreciated, not required):
+If you use this in your mod/project, please include a credit like:
+"Universal Weapon Slot System by Vortex"

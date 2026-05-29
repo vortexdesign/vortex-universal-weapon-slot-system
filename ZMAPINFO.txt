@@ -1,0 +1,16 @@
+// VUWS Handler Registration
+//
+// SetOrder values:
+//   VUWS_SlotHandler  : 0  (runs first, initializes cached refs and per-player state)
+//   VUWS_SlotSetup    : 5  (registers self on handler.cachedSetup)
+//   VUWS_SlotCommands : 5  (console dispatcher)
+//   VUWS_SlotRenderer : 5  (RenderOverlay HUD)
+//
+// Modder callbacks: subclass VUWS_SlotSetup, register in own ZMAPINFO at SetOrder > 5
+//
+// Optional Gearbox compat ships in VUWS_Gearbox.pk3 with its own handler
+
+GameInfo
+{
+    AddEventHandlers = "VUWS_SlotHandler", "VUWS_SlotSetup", "VUWS_SlotCommands", "VUWS_SlotRenderer"
+}

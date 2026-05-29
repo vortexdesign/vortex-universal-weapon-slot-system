@@ -1,0 +1,116 @@
+// VUWS Key Configuration
+//
+// Slot editor opens via Q, exclude menu via Z (non-destructive defaultbinds)
+// Other commands fire netevents handled by VUWS_SlotCommands.NetworkProcess
+
+alias vuws_slot_editor "openmenu VUWS_SlotEditorMenu"
+alias vuws_exclude_menu "openmenu VUWS_ExcludeListMenu"
+
+defaultbind q vuws_slot_editor
+defaultbind z vuws_exclude_menu
+
+// --- Slot key aliases ---
+// Netevent-only routing, handler dispatches the switch via Weapon.Use(false) from ZScript
+// Chaining `slot N` here triggers a visible weapon-lower glitch before the override fires
+// defaultbind takes effect only on fresh installs, existing users rebind via Options menu
+alias vuws_slotk_0 "netevent vuws_slot_key 0"
+alias vuws_slotk_1 "netevent vuws_slot_key 1"
+alias vuws_slotk_2 "netevent vuws_slot_key 2"
+alias vuws_slotk_3 "netevent vuws_slot_key 3"
+alias vuws_slotk_4 "netevent vuws_slot_key 4"
+alias vuws_slotk_5 "netevent vuws_slot_key 5"
+alias vuws_slotk_6 "netevent vuws_slot_key 6"
+alias vuws_slotk_7 "netevent vuws_slot_key 7"
+alias vuws_slotk_8 "netevent vuws_slot_key 8"
+alias vuws_slotk_9 "netevent vuws_slot_key 9"
+
+defaultbind 0 vuws_slotk_0
+defaultbind 1 vuws_slotk_1
+defaultbind 2 vuws_slotk_2
+defaultbind 3 vuws_slotk_3
+defaultbind 4 vuws_slotk_4
+defaultbind 5 vuws_slotk_5
+defaultbind 6 vuws_slotk_6
+defaultbind 7 vuws_slotk_7
+defaultbind 8 vuws_slotk_8
+defaultbind 9 vuws_slotk_9
+
+// --- Keybind Section (shows under Options > Customize Controls) ---
+addkeysection "Universal Weapon Slot System" vuws_controls
+addmenukey "Open Slot Editor" vuws_slot_editor
+addmenukey "Open Exclude List" vuws_exclude_menu
+
+addkeysection "Universal Weapon Slot Keys" vuws_slot_keys
+addmenukey "Slot 0 (VUWS-aware)" vuws_slotk_0
+addmenukey "Slot 1 (VUWS-aware)" vuws_slotk_1
+addmenukey "Slot 2 (VUWS-aware)" vuws_slotk_2
+addmenukey "Slot 3 (VUWS-aware)" vuws_slotk_3
+addmenukey "Slot 4 (VUWS-aware)" vuws_slotk_4
+addmenukey "Slot 5 (VUWS-aware)" vuws_slotk_5
+addmenukey "Slot 6 (VUWS-aware)" vuws_slotk_6
+addmenukey "Slot 7 (VUWS-aware)" vuws_slotk_7
+addmenukey "Slot 8 (VUWS-aware)" vuws_slotk_8
+addmenukey "Slot 9 (VUWS-aware)" vuws_slotk_9
+
+// --- Scroll wheel cycle aliases ---
+// Engine weapnext/weapprev walk the engine slot table, ignores user_slot reassignments
+// VUWS aliases dispatch via netevent and cycle through the same effective list the HUD uses
+alias vuws_weapnext "netevent vuws_weapnext"
+alias vuws_weapprev "netevent vuws_weapprev"
+
+addmenukey "Weapon Cycle Next (VUWS-aware)" vuws_weapnext
+addmenukey "Weapon Cycle Previous (VUWS-aware)" vuws_weapprev
+
+// --- Console commands ---
+alias vuws_help "netevent vuws_help"
+alias vuws_status "netevent vuws_status"
+alias vuws_list "netevent vuws_list"
+alias vuws_clear_user_slots "netevent vuws_clear_user_slots"
+// Per-slot variant: usage `vuws_clear_user_slot_3` clears just slot 3
+alias vuws_clear_user_slot_0 "netevent vuws_clear_user_slot 0"
+alias vuws_clear_user_slot_1 "netevent vuws_clear_user_slot 1"
+alias vuws_clear_user_slot_2 "netevent vuws_clear_user_slot 2"
+alias vuws_clear_user_slot_3 "netevent vuws_clear_user_slot 3"
+alias vuws_clear_user_slot_4 "netevent vuws_clear_user_slot 4"
+alias vuws_clear_user_slot_5 "netevent vuws_clear_user_slot 5"
+alias vuws_clear_user_slot_6 "netevent vuws_clear_user_slot 6"
+alias vuws_clear_user_slot_7 "netevent vuws_clear_user_slot 7"
+alias vuws_clear_user_slot_8 "netevent vuws_clear_user_slot 8"
+alias vuws_clear_user_slot_9 "netevent vuws_clear_user_slot 9"
+alias vuws_export_config "netevent vuws_export_config"
+alias vuws_import_config "netevent vuws_import_config"
+
+// Test commands: simulate a slot-key press without rebinding
+// Usage: type `vuws_test_slot_5` in console, should switch to whatever you assigned to slot 5
+alias vuws_test_slot_0 "netevent vuws_slot_key 0"
+alias vuws_test_slot_1 "netevent vuws_slot_key 1"
+alias vuws_test_slot_2 "netevent vuws_slot_key 2"
+alias vuws_test_slot_3 "netevent vuws_slot_key 3"
+alias vuws_test_slot_4 "netevent vuws_slot_key 4"
+alias vuws_test_slot_5 "netevent vuws_slot_key 5"
+alias vuws_test_slot_6 "netevent vuws_slot_key 6"
+alias vuws_test_slot_7 "netevent vuws_slot_key 7"
+alias vuws_test_slot_8 "netevent vuws_slot_key 8"
+alias vuws_test_slot_9 "netevent vuws_slot_key 9"
+
+// One-shot binding command for users with existing 1-9 binds
+// `vuws_bind_slot_keys` rebinds 0-9 to the VUWS-aware aliases, INI persistent
+// `vuws_unbind_slot_keys` reverts
+alias vuws_bind_slot_keys "bind 1 vuws_slotk_1; bind 2 vuws_slotk_2; bind 3 vuws_slotk_3; bind 4 vuws_slotk_4; bind 5 vuws_slotk_5; bind 6 vuws_slotk_6; bind 7 vuws_slotk_7; bind 8 vuws_slotk_8; bind 9 vuws_slotk_9; bind 0 vuws_slotk_0; echo VUWS: 0-9 rebound to VUWS-aware slot keys"
+
+alias vuws_unbind_slot_keys "bind 0 \"slot 0\"; bind 1 \"slot 1\"; bind 2 \"slot 2\"; bind 3 \"slot 3\"; bind 4 \"slot 4\"; bind 5 \"slot 5\"; bind 6 \"slot 6\"; bind 7 \"slot 7\"; bind 8 \"slot 8\"; bind 9 \"slot 9\"; echo VUWS: 0-9 reverted to engine slot keys"
+
+// One-shot mwheel rebind for users whose wheel is bound to engine weapnext/weapprev
+// `vuws_bind_scroll_keys` rebinds mwheelup/down to the VUWS-aware aliases, INI persistent
+// `vuws_unbind_scroll_keys` reverts
+alias vuws_bind_scroll_keys "bind mwheelup vuws_weapnext; bind mwheeldown vuws_weapprev; echo VUWS: mouse wheel rebound to VUWS-aware cycle"
+alias vuws_unbind_scroll_keys "bind mwheelup weapnext; bind mwheeldown weapprev; echo VUWS: mouse wheel reverted to engine cycle"
+
+// vuws_reset_defaults
+//
+// Chained `set` commands not netevent
+// ZScript CVar.SetInt on user-scope CVars doesn't reliably persist via netevent
+// Console `set` path persists, same trick as VUOS / VUSS
+//
+// Resets all settings CVars but NOT vuws_user_slot_* (those reset via vuws_clear_user_slots)
+alias vuws_reset_defaults "set vuws_enabled 1; set vuws_debug 0; set vuws_sound_enabled 1; set vuws_cap_default 3; set vuws_cap_0 -1; set vuws_cap_1 -1; set vuws_cap_2 -1; set vuws_cap_3 -1; set vuws_cap_4 -1; set vuws_cap_5 -1; set vuws_cap_6 -1; set vuws_cap_7 -1; set vuws_cap_8 -1; set vuws_cap_9 -1; set vuws_unlimited_for_slot_0 1; set vuws_block_action 2; set vuws_enforce_on_grant 1; set vuws_count_sisters_as_one 1; set vuws_use_trace_interval 3; set vuws_exclude_classes \"\"; set vuws_use_pickup_prompt 1; set vuws_use_pickup_range 96; set vuws_pickup_detection 2; set vuws_auto_show_on_first_map 0; set vuws_auto_show_on_map_change 0; set vuws_auto_show_on_death 0; set vuws_notify 1; set vuws_notify_duration 70; set vuws_notify_opacity 0.9; set vuws_slot_hud_enabled 1; set vuws_slot_hud_mode 0; set vuws_slot_hud_orientation 0; set vuws_slot_hud_position 7; set vuws_slot_hud_offset_x 0; set vuws_slot_hud_offset_y 0; set vuws_slot_hud_scale 1.5; set vuws_slot_hud_opacity 0.9; set vuws_slot_hud_duration 70; set vuws_color_blocked 6; set vuws_color_swap 5; set vuws_color_menu_accent 10; set vuws_color_menu_reset 6; set vuws_color_pickup_prompt 9; echo VUWS: Reset settings to defaults"

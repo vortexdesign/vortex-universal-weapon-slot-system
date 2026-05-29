@@ -1,0 +1,172 @@
+// VUWS Settings Menu
+//
+// AddOptionMenu is non-destructive, coexists with VUAS / VUOS / VUSS / other submenu mods
+
+AddOptionMenu "OptionsMenu"
+{
+    StaticText ""
+    Submenu "Universal Weapon Slot System", "UniversalWeaponSlotSystemMenu"
+}
+
+AddOptionMenu "OptionsMenuSimple"
+{
+    StaticText ""
+    Submenu "Universal Weapon Slot System", "UniversalWeaponSlotSystemMenu"
+}
+
+// --- Option value lists ---
+OptionValue "VuwsBlockActionValues"
+{
+    0, "Silent Reject"
+    1, "Auto-Swap (drop oldest)"
+    2, "Use-Key Required (default)"
+}
+
+OptionValue "VuwsPickupDetectionValues"
+{
+    0, "Look-Trace"
+    1, "Proximity"
+    2, "Auto"
+}
+
+OptionValue "VuwsSlotHudModeValues"
+{
+    0, "Show On Weapon Switch"
+    1, "Always Show"
+}
+
+OptionValue "VuwsSlotHudOrientationValues"
+{
+    0, "Vertical"
+    1, "Horizontal"
+}
+
+OptionValue "VuwsHudPositionValues"
+{
+    0, "Top Left"
+    1, "Top Right"
+    2, "Bottom Left"
+    3, "Bottom Right"
+    4, "Bottom Center"
+    5, "Top Center"
+    6, "Left Center"
+    7, "Right Center"
+}
+
+OptionValue "VuwsColorValues"
+{
+    0,  "Brick"
+    1,  "Tan"
+    2,  "Gray"
+    3,  "Green"
+    4,  "Brown"
+    5,  "Gold"
+    6,  "Red"
+    7,  "Blue"
+    8,  "Orange"
+    9,  "White"
+    10, "Yellow"
+    11, "Untranslated"
+    12, "Black"
+    13, "Light Blue"
+    14, "Cream"
+    15, "Olive"
+    16, "Dark Green"
+    17, "Dark Red"
+    18, "Dark Brown"
+    19, "Purple"
+    20, "Dark Gray"
+    21, "Cyan"
+    22, "Ice"
+    23, "Fire"
+    24, "Sapphire"
+    25, "Teal"
+}
+
+// Main menu
+OptionMenu "UniversalWeaponSlotSystemMenu"
+{
+    Title "Universal Weapon Slot System"
+
+    // ---- General ----
+    StaticText "General", 1
+    Option "Library Enabled", "vuws_enabled", "OnOff"
+    Option "Menu Sounds", "vuws_sound_enabled", "OnOff"
+
+    StaticText ""
+    Command "Open Slot Editor...", "vuws_slot_editor"
+    Command "Open Exclude List...", "vuws_exclude_menu"
+
+    StaticText ""
+
+    // ---- Auto-show Slot Editor ----
+    StaticText "Auto-show Slot Editor", 1
+    Option "On First Map of Session", "vuws_auto_show_on_first_map", "OnOff"
+    Option "On Every Map Change", "vuws_auto_show_on_map_change", "OnOff"
+    Option "On Death Respawn", "vuws_auto_show_on_death", "OnOff"
+
+    StaticText ""
+
+    // ---- Pickup ----
+    StaticText "Pickup", 1
+    Option "At-Cap Behavior", "vuws_block_action", "VuwsBlockActionValues"
+    Option "Show Pickup Prompt", "vuws_use_pickup_prompt", "OnOff"
+    Option "Detection Mode", "vuws_pickup_detection", "VuwsPickupDetectionValues"
+
+    StaticText ""
+
+    // ---- Per-Slot Caps ----
+    StaticText "Per-Slot Caps (-1 = use default)", 1
+    Slider "Default Cap", "vuws_cap_default", 1, 20, 1, 0
+    Slider "Slot 1 Cap", "vuws_cap_1", -1, 20, 1, 0
+    Slider "Slot 2 Cap", "vuws_cap_2", -1, 20, 1, 0
+    Slider "Slot 3 Cap", "vuws_cap_3", -1, 20, 1, 0
+    Slider "Slot 4 Cap", "vuws_cap_4", -1, 20, 1, 0
+    Slider "Slot 5 Cap", "vuws_cap_5", -1, 20, 1, 0
+    Slider "Slot 6 Cap", "vuws_cap_6", -1, 20, 1, 0
+    Slider "Slot 7 Cap", "vuws_cap_7", -1, 20, 1, 0
+    Slider "Slot 8 Cap", "vuws_cap_8", -1, 20, 1, 0
+    Slider "Slot 9 Cap", "vuws_cap_9", -1, 20, 1, 0
+    Option "Slot 0 Unlimited (utility / grenades)", "vuws_unlimited_for_slot_0", "OnOff"
+    Slider "Slot 0 Cap", "vuws_cap_0", -1, 20, 1, 0
+
+    StaticText ""
+
+    // ---- Notifications ----
+    StaticText "Notifications", 1
+    Option "Show HUD Toasts", "vuws_notify", "OnOff"
+    Slider "Toast Duration (tics)", "vuws_notify_duration", 35, 350, 5, 0
+    Slider "Toast Opacity", "vuws_notify_opacity", 0.0, 1.0, 0.05, 2
+
+    StaticText ""
+
+    // ---- Current Slot HUD ----
+    StaticText "Current Slot HUD", 1
+    Option "Show Current Slot", "vuws_slot_hud_enabled", "OnOff"
+    Option "Show Mode", "vuws_slot_hud_mode", "VuwsSlotHudModeValues"
+    Option "Orientation", "vuws_slot_hud_orientation", "VuwsSlotHudOrientationValues"
+    Option "Position", "vuws_slot_hud_position", "VuwsHudPositionValues"
+    Slider "X Offset", "vuws_slot_hud_offset_x", -200, 200, 5, 0
+    Slider "Y Offset", "vuws_slot_hud_offset_y", -200, 200, 5, 0
+    Slider "Scale", "vuws_slot_hud_scale", 0.5, 2.0, 0.1, 1
+    Slider "Opacity", "vuws_slot_hud_opacity", 0.0, 1.0, 0.05, 2
+    Slider "Fade Duration (tics)", "vuws_slot_hud_duration", 35, 350, 5, 0
+
+    StaticText ""
+
+    // ---- Colors ----
+    StaticText "Colors", 1
+    Option "Block Toast Color", "vuws_color_blocked", "VuwsColorValues"
+    Option "Swap Toast Color", "vuws_color_swap", "VuwsColorValues"
+    Option "Menu Accent Color", "vuws_color_menu_accent", "VuwsColorValues"
+    Option "Reset Button Color", "vuws_color_menu_reset", "VuwsColorValues"
+    Option "Use-Pickup Prompt Color", "vuws_color_pickup_prompt", "VuwsColorValues"
+
+    StaticText ""
+
+    // ---- System ----
+    StaticText "System", 1
+    Option "Debug Console Output", "vuws_debug", "OnOff"
+    SafeCommand "Clear User Slot Assignments", "vuws_clear_user_slots"
+    SafeCommand "Reset All Settings to Defaults", "vuws_reset_defaults"
+}

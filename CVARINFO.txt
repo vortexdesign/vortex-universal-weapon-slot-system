@@ -1,0 +1,92 @@
+// VUWS CVar Definitions
+//
+// behavior CVars server-scope (deterministic gameplay rules across coop clients)
+// personal prefs user-scope (caps, slot config, HUD, colors)
+// groups: master, caps, behavior, reassign persistence, use-pickup, HUD, colors
+
+// --- Master toggles ---
+server bool vuws_enabled = true;                    // master toggle
+user bool vuws_debug = false;                       // console debug output prefixed "VUWS:"
+user bool vuws_sound_enabled = true;                // menu UI sounds (hover, click, button activate)
+
+// --- Caps (slot occupant limits) ---
+user int vuws_cap_default = 3;                      // Default per-slot cap, range 1-20
+user int vuws_cap_0 = -1;                           // -1 = use default, otherwise overrides for slot 0
+user int vuws_cap_1 = -1;
+user int vuws_cap_2 = -1;
+user int vuws_cap_3 = -1;
+user int vuws_cap_4 = -1;
+user int vuws_cap_5 = -1;
+user int vuws_cap_6 = -1;
+user int vuws_cap_7 = -1;
+user int vuws_cap_8 = -1;
+user int vuws_cap_9 = -1;
+user bool vuws_unlimited_for_slot_0 = true;         // Slot 0 (utility/grenade slot in most mods) defaults uncapped
+
+// --- Behavior ---
+server int vuws_block_action = 2;                   // 0=silent reject, 1=LRU swap, 2=use-key prompt at cap
+server bool vuws_enforce_on_grant = true;           // WorldTick reconciliation for GiveInventory bypasses
+server bool vuws_count_sisters_as_one = true;       // SisterWeapon-linked pairs count as one occupant
+server int vuws_use_trace_interval = 3;             // tics between use-key trace runs
+
+// --- Exclude list ---
+server string vuws_exclude_classes = "";            // CSV of weapon class names ignored from cap counting
+
+// --- Transient stash for menu->handler exclude-list dispatch ---
+// nosave + noarchive: skip both savegame AND INI archive (plain `nosave` still archives
+// to INI, which would let stale staging values accumulate or overflow the ~255 char line)
+nosave noarchive string vuws_pending_exclude_csv = "";
+
+// --- Transient stash for vuws_import_config (pipe-delimited 10-slot string) ---
+nosave noarchive string vuws_pending_slot_config_csv = "";
+
+// --- Reassignment persistence ---
+// machine-local INI for THIS machine's player only, in-session state in handler.memoryUserSlots
+nosave string vuws_user_slot_0 = "";
+nosave string vuws_user_slot_1 = "";
+nosave string vuws_user_slot_2 = "";
+nosave string vuws_user_slot_3 = "";
+nosave string vuws_user_slot_4 = "";
+nosave string vuws_user_slot_5 = "";
+nosave string vuws_user_slot_6 = "";
+nosave string vuws_user_slot_7 = "";
+nosave string vuws_user_slot_8 = "";
+nosave string vuws_user_slot_9 = "";
+
+// --- Use-key pickup ---
+user bool vuws_use_pickup_prompt = true;            // show prompt at-cap when aiming at / near a weapon
+server int vuws_use_pickup_range = 96;              // line-trace / proximity distance, map units
+server int vuws_pickup_detection = 2;               // 0=look-trace, 1=proximity, 2=auto (trace, fall back to proximity if no hit)
+
+// --- Auto-show slot editor ---
+user bool vuws_auto_show_on_first_map = false;      // pop the menu once per session on first map
+user bool vuws_auto_show_on_map_change = false;     // pop on every map change
+user bool vuws_auto_show_on_death = false;          // pop on respawn after death
+
+// --- HUD / notifications ---
+user bool vuws_notify = true;                       // HUD toast on block / swap / bump
+user int vuws_notify_duration = 70;                 // Toast duration in tics
+user float vuws_notify_opacity = 0.9;               // Toast opacity 0.0-1.0
+
+// --- Colors (Font.CR_ indices 0-25, matches VUAS / VUOS / VUSS) ---
+user int vuws_color_blocked = 6;                    // Block/reject toast color (6=Red)
+user int vuws_color_swap = 5;                       // Swap/bump toast color (5=Gold)
+user int vuws_color_menu_accent = 10;               // Menu highlight + selected-row tint (10=Yellow)
+user int vuws_color_menu_reset = 6;                 // Reset Slot / Reset All button accent (6=Red, destructive cue)
+user int vuws_color_pickup_prompt = 9;              // Use-pickup prompt text color (9=White)
+
+// --- Current Slot HUD ---
+// shows weapons in the active slot as icons, current ReadyWeapon highlighted
+// modes: 0 = show briefly on weapon switch with fade, 1 = always visible
+// position: 0=top-left 1=top-right 2=bottom-left 3=bottom-right
+//          4=bottom-center 5=top-center 6=left-center 7=right-center
+user bool  vuws_slot_hud_enabled = true;
+user int   vuws_slot_hud_mode = 0;
+user int   vuws_slot_hud_orientation = 0;     // 0=vertical, 1=horizontal
+user int   vuws_slot_hud_position = 7;        // right-center
+user int   vuws_slot_hud_offset_x = 0;
+user int   vuws_slot_hud_offset_y = 0;
+user float vuws_slot_hud_scale = 1.5;
+user float vuws_slot_hud_opacity = 0.9;
+user int   vuws_slot_hud_duration = 70;       // on-switch fade duration in tics
+

@@ -1,0 +1,23 @@
+version "4.12.0"
+
+// VUWS include order:
+//   1. Data         - shared structs / enums referenced by everything else
+//   2. UI Config    - layout constants for the menus
+//   3. UI Widgets   - HitRect, ScrollPane referenced by both menus
+//   4. Setup        - modder subclass base referenced by handler
+//   5. Handler      - core logic, must come before LimitToken since token references it
+//   6. LimitToken   - sentinel inventory, references handler
+//   7. Commands     - console dispatcher, references handler
+//   8. Renderer     - HUD rendering, references handler + RenderSettings
+//   9. UI menus     - reference handler for state queries
+
+#include "ZSCRIPT/Slot/SlotData.zs"
+#include "ZSCRIPT/UI/SlotConfig.zs"
+#include "ZSCRIPT/UI/SlotWidgets.zs"
+#include "ZSCRIPT/Slot/SlotSetup.zs"
+#include "ZSCRIPT/Slot/SlotHandler.zs"
+#include "ZSCRIPT/Slot/LimitToken.zs"
+#include "ZSCRIPT/Slot/SlotCommands.zs"
+#include "ZSCRIPT/Slot/SlotRenderer.zs"
+#include "ZSCRIPT/UI/SlotEditorMenu.zs"
+#include "ZSCRIPT/UI/ExcludeListMenu.zs"
