@@ -97,7 +97,15 @@ class VUWS_LimitToken : Inventory
                 return true;
             }
 
-            handler.DropWithScatter(owner, bumpInv, 0, 1);
+            // Undroppable bump victim, fall through to silent reject so pickup is blocked
+            // rather than firing a phantom OnWeaponDropped + leaving player over-cap
+            if (!handler.DropWithScatter(owner, bumpInv, 0, 1))
+            {
+                item.bPickupGood = false;
+                if (setup) setup.OnPickupBlocked(owner.player, weap, slot);
+                handler.LogBlockedToast(weap, slot);
+                return true;
+            }
             if (setup) setup.OnWeaponDropped(owner.player, Weapon(bumpInv), slot, VUWS_DROP_LRU_SWAP);
             handler.LogToast(weap, slot, bumpClass);
             return Super.HandlePickup(item);

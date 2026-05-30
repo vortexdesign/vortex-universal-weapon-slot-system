@@ -958,11 +958,12 @@ class VUWS_SlotHandler : StaticEventHandler
     // ---- Drop with scatter (radial outward velocity) ----
 
     // floor drop with small radial outward velocity to avoid visual stacking
-    void DropWithScatter(Actor pawn, Inventory inv, int dropIndex, int totalDrops)
+    // returns true if the engine actually dropped the inv, false for Undroppable / Untossable / Owner mismatch
+    bool DropWithScatter(Actor pawn, Inventory inv, int dropIndex, int totalDrops)
     {
-        if (!pawn || !inv) return;
+        if (!pawn || !inv) return false;
         let dropped = pawn.DropInventory(inv, 1);
-        if (!dropped) return;
+        if (!dropped) return false;
 
         // Radial scatter, evenly spaced around the player
         double angle = (totalDrops > 0) ? (360.0 / totalDrops) * dropIndex : 0;
@@ -972,6 +973,7 @@ class VUWS_SlotHandler : StaticEventHandler
         if (IsDebugEnabled())
             Console.Printf("VUWS: Dropped %s at (%.0f, %.0f, %.0f)",
                 inv.GetClass().GetClassName(), dropped.pos.x, dropped.pos.y, dropped.pos.z);
+        return true;
     }
 
     // ---- Reconciliation (over-cap detection from grant bypass) ----
@@ -1039,7 +1041,17 @@ class VUWS_SlotHandler : StaticEventHandler
                 let bumpInv = pawn.FindInventory(bumpClass);
                 if (!bumpInv) break;
 
-                DropWithScatter(pawn, bumpInv, dropped, totalToScatter);
+                // engine refuses Undroppable / Untossable, break before firing OnWeaponDropped
+                // accepts over-cap state instead of spinning 32 phantom callbacks per slot
+                bool ok = DropWithScatter(pawn, bumpInv, dropped, totalToScatter);
+                if (!ok)
+                {
+                    if (IsDebugEnabled())
+                        Console.Printf("VUWS: %s undroppable, slot %d stays %d/%d",
+                            bumpInv.GetClass().GetClassName(), slot, count, cap);
+                    break;
+                }
+
                 if (IsDebugEnabled())
                     Console.Printf("VUWS: Dropped %s from slot %d at (%.0f, %.0f, %.0f) (over cap, %d/%d)",
                         bumpInv.GetTag(), slot, pawn.pos.x, pawn.pos.y, pawn.pos.z, count, cap);
@@ -1290,9 +1302,18 @@ class VUWS_SlotHandler : StaticEventHandler
         // virtual IsCompatible() only dispatches to subclasses from Setup itself
         suspendedByCompat = false;
 
-        // first-load grace covers pre-VUWS saves so we don't drop over-cap weapons on save load
+        // first-load grace only fires for pre-VUWS saves (no LimitToken in restored inventory)
+        // check BEFORE the grant loop below since PlayerSpawned doesn't fire on save loads
+        // VUWS-created saves had the token so the restored inv already contains it
         // cleared on next map transition
-        firstLoadGrace = e.IsSaveGame;
+        bool consoleHadToken = false;
+        if (e.IsSaveGame
+            && consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+            && playeringame[consoleplayer] && players[consoleplayer].mo)
+        {
+            consoleHadToken = (players[consoleplayer].mo.FindInventory("VUWS_LimitToken") != null);
+        }
+        firstLoadGrace = e.IsSaveGame && !consoleHadToken;
 
         // Reset transient state for all players
         for (int p = 0; p < MAXPLAYERS; p++)
@@ -1308,12 +1329,24 @@ class VUWS_SlotHandler : StaticEventHandler
             useTraceCounter[p] = 0;
             prevUseHeld[p] = false;
             pendingSlotKey[p] = -1;
+            pendingScrollAccum[p] = 0;
+            diedRecently[p] = false;
 
             if (playeringame[p] && players[p].mo)
             {
                 GrantTokenIfMissing(players[p].mo);
                 // No replay needed: override mechanism reads vuws_user_slot_* directly per tic
             }
+        }
+
+        // PlayerSpawned and PlayerEntered both skip on save load (engine g_level.cpp:1496-1499)
+        // so restore the local player's slot mapping from CVars here, then sync to peers
+        if (e.IsSaveGame
+            && consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+            && playeringame[consoleplayer] && players[consoleplayer].mo)
+        {
+            RestoreLocalSlotsToMemory(consoleplayer);
+            BroadcastFullSlotConfig(consoleplayer);
         }
 
         pendingToasts.Clear();
@@ -1532,13 +1565,13 @@ class VUWS_SlotHandler : StaticEventHandler
                 {
                     // pre-bump at cap so reconcile doesn't drop the new weapon
                     // null bump victim = abort, force-accept here would push +1 over cap
+                    // Undroppable bump victim = abort too, no point picking up if we can't free the slot
                     bool bumpOk = false;
                     if (useEligibleBumpVictim[p])
                     {
                         let bumpInv = players[p].mo.FindInventory(useEligibleBumpVictim[p]);
-                        if (bumpInv)
+                        if (bumpInv && DropWithScatter(players[p].mo, bumpInv, 0, 1))
                         {
-                            DropWithScatter(players[p].mo, bumpInv, 0, 1);
                             let setup = GetSetup();
                             if (setup) setup.OnWeaponDropped(players[p], Weapon(bumpInv), useEligibleSlot[p], VUWS_DROP_USE_KEY);
                             bumpOk = true;

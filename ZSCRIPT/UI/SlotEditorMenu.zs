@@ -7,9 +7,9 @@
 //   Right bottom: all weapons in player inventory (sister-deduped)
 //   Buttons row: Add (add selected weapon to active slot) and Remove (remove from slot)
 //
-// Click flow:
-//   1. Click slot N -> highlights slot, right-top updates with that slot's weapons
-//   2. Click weapon in right-top OR right-bottom -> highlights it
+// Flow:
+//   1. Choose slot N -> highlights slot, right-top updates with that slot's weapons
+//   2. Choose weapon in right-top OR right-bottom -> highlights it
 //   3. Click Add -> assigns highlighted weapon to active slot
 //      Click Remove -> removes highlighted weapon from active slot (only valid if from right-top)
 //
@@ -1128,7 +1128,7 @@ class VUWS_SlotEditorMenu : GenericMenu
 
     void DrawHintBar()
     {
-        String line1 = "Click slot then click weapon, then ADD.";
+        String line1 = "Choose slot then choose weapon, then ADD.";
         String line2 = "[0-9] Slot   [A] Add   [R] Remove   [Esc/Q] Done";
         int line1X = hintBarRect.x + (hintBarRect.w - SmallFont.StringWidth(line1)) / 2;
         int line2X = hintBarRect.x + (hintBarRect.w - SmallFont.StringWidth(line2)) / 2;
